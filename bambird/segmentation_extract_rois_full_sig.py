@@ -25,6 +25,10 @@ from scipy import ndimage
 
 # Scikit-Maad (ecoacoustics functions) package
 import maad
+import maad.sound
+import maad.rois
+import maad.util
+import maad.features
 from maad.util import mean_dB, add_dB, power2dB, dB2power
 
 PARAMS_EXTRACT = {'SAMPLE_RATE': 48000,

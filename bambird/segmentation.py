@@ -33,6 +33,8 @@ from concurrent import futures
 
 # Scikit-Maad (ecoacoustics functions) package
 import maad
+import maad.sound
+import maad.util
 
 #
 from bambird import config as cfg
@@ -297,8 +299,8 @@ def single_file_extract_rois(
           
                     # Add current_df_rois to df_rois
                     if len(df_rois) > 0:
-                        df_rois = df_rois.append(
-                            current_df_rois, ignore_index=True)
+                        df_rois = pd.concat(
+                            [df_rois, current_df_rois], ignore_index=True)
                     else:
                         df_rois = current_df_rois
 
@@ -493,15 +495,16 @@ def multicpu_extract_rois(
                         multicpu_func, df_data[~mask]["fullfilename"].to_list()
                     ):
                         pbar.update(1)
-                        df_rois = df_rois.append(df_rois_temp)
+                        df_rois = pd.concat([df_rois, df_rois_temp])
             
             # sort filename for each categories
             #---------------------------------
             df_rois_sorted = pd.DataFrame()
             for categories in df_rois["categories"].unique():
-                df_rois_sorted = df_rois_sorted.append(
+                df_rois_sorted = pd.concat([
+                    df_rois_sorted,
                     df_rois[df_rois["categories"] == categories].sort_index()
-                )
+                ])
                         
             if verbose :
                print('\n')

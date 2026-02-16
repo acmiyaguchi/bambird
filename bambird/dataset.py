@@ -21,6 +21,7 @@ import glob
 
 # Scikit-Maad (ecoacoustics functions) package
 import maad
+import maad.util
 
 #
 from bambird import config as cfg
@@ -317,10 +318,10 @@ def query_download_xc(
             for n, k in zip( df_num, keys):
                 mask = df_dataset[(df_dataset[['gen','sp']] == k)['gen']]
                 if n >= NUM_FILES :
-                    subdf_dataset = subdf_dataset.append(mask.apply(lambda x: x.sample(n=NUM_FILES, 
-                                                                                       random_state=random_seed)))
+                    subdf_dataset = pd.concat([subdf_dataset, mask.apply(lambda x: x.sample(n=NUM_FILES,
+                                                                                       random_state=random_seed))])
                 else:
-                    subdf_dataset = subdf_dataset.append(mask)
+                    subdf_dataset = pd.concat([subdf_dataset, mask])
         else:
             subdf_dataset = df_dataset
        
@@ -387,10 +388,10 @@ def query_download_xc(
                 for n, k in zip( df_num, keys):
                     mask = subdf_dataset[(subdf_dataset[['gen','sp']] == k)['gen']]
                     if n >= NUM_FILES :
-                        df_to_dl = df_to_dl.append(mask.apply(lambda x: x.sample(n=NUM_FILES, 
-                                                                                 random_state=random_seed)))
+                        df_to_dl = pd.concat([df_to_dl, mask.apply(lambda x: x.sample(n=NUM_FILES,
+                                                                                 random_state=random_seed))])
                     else:
-                        df_to_dl = df_to_dl.append(mask) 
+                        df_to_dl = pd.concat([df_to_dl, mask])
 
             else :
                 df_to_dl = subdf_dataset                                                         
@@ -446,10 +447,10 @@ def query_download_xc(
                 for n, k in zip( df_num, keys):
                     mask = df_dataset[(df_dataset[['gen','sp']] == k)['gen']]
                     if n >= NUM_FILES :
-                        df = df.append(mask.apply(lambda x: x.sample(n=NUM_FILES, 
-                                                                     random_state=random_seed)))
+                        df = pd.concat([df, mask.apply(lambda x: x.sample(n=NUM_FILES,
+                                                                     random_state=random_seed))])
                     else:
-                        df = df.append(mask)
+                        df = pd.concat([df, mask])
             else:
                 df = df_dataset
                 
@@ -471,17 +472,17 @@ def grab_audio_to_df (path,
                                       '**/*.'+audio_format), 
                          recursive=True)
     
-    df_dataset = pd.DataFrame()
+    records = []
     for file in filelist:
         categories = Path(file).parts[-2]
         iden = Path(file).parts[-1]
-            
-        df_dataset = df_dataset.append({
-                                      'fullfilename':file,
-                                      'filename'    :Path(file).parts[-1],
-                                      'categories'  :categories,
-                                      'id'          :iden},
-                                    ignore_index=True)
+        records.append({
+            'fullfilename': file,
+            'filename': Path(file).parts[-1],
+            'categories': categories,
+            'id': iden,
+        })
+    df_dataset = pd.DataFrame(records)
         
     # set id as index
     df_dataset.set_index('id', inplace = True)

@@ -50,6 +50,8 @@ import hdbscan
 
 # Scikit-Maad (ecoacoustics functions) package
 import maad
+import maad.sound
+import maad.util
 
 from bambird import config as cfg
 # cfg.get_config()
