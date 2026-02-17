@@ -25,8 +25,7 @@ import maad.sound
 import maad.rois
 import maad.util
 
-# import bambird
-from bambird import config as cfg
+from . import config as cfg
 
 #%%
 ###############################################################################

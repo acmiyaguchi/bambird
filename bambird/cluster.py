@@ -53,7 +53,7 @@ import maad
 import maad.sound
 import maad.util
 
-from bambird import config as cfg
+from . import config as cfg
 # cfg.get_config()
 
 warnings.filterwarnings("ignore", module="librosa")

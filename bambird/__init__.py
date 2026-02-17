@@ -86,13 +86,13 @@ from .features import(
     multicpu_compute_features,
     )
                  
-from .cluster import (
-    find_cluster,
-    cluster_eval,
-    overlay_rois,
-    mark_rois,
-    unmark_rois
-    )
+def __getattr__(name):
+    """Lazy import for cluster module (umap/hdbscan are slow to import)."""
+    _cluster_names = {'find_cluster', 'cluster_eval', 'overlay_rois', 'mark_rois', 'unmark_rois'}
+    if name in _cluster_names:
+        from . import cluster as _cluster
+        return getattr(_cluster, name)
+    raise AttributeError(f"module 'bambird' has no attribute {name!r}")
 
 
 __all__ = [

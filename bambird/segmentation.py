@@ -37,8 +37,8 @@ import maad.sound
 import maad.util
 
 #
-from bambird import config as cfg
-from bambird import grab_audio_to_df
+from . import config as cfg
+from .dataset import grab_audio_to_df
 
 #%%
 ###############################################################################

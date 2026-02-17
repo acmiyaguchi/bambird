@@ -17,7 +17,7 @@ import os
 # basic packages
 import yaml
 
-import bambird
+import importlib
 
 #%%
 
@@ -30,7 +30,7 @@ PARAMS_XC = {
 }
 
 PARAMS_EXTRACT = {
-    "FUNC" : bambird.extract_rois_full_sig,
+    "FUNC" : None,  # set lazily to avoid circular import; load_config resolves !FUNC tags
     # Extract Audio resampling
     "SAMPLE_RATE": 48000,  # Sampling frequency in Hz
     # Audio preprocess
@@ -109,16 +109,16 @@ def _fun_call_by_name(val):
     if '.' in val:
         module_name, fun_name = val.rsplit('.', 1)
         # Restrict which modules may be loaded here to avoid safety issue
-        # Put the name of the module
         assert module_name.startswith('bambird')
     else:
         module_name = '__main__'
         fun_name = val
     try:
-        __import__(module_name)
+        # Use importlib to import the specific submodule without triggering
+        # the full bambird package __init__.py (which imports heavy deps like umap)
+        module = importlib.import_module(module_name)
     except ImportError :
-        raise ("Can''t import {} while constructing a Python object".format(val))
-    module = sys.modules[module_name]
+        raise ImportError("Can't import {} while constructing a Python object".format(val))
     fun = getattr(module, fun_name)
     return fun
 

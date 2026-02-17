@@ -35,9 +35,9 @@ import maad.util
 import maad.features
 
 #
-from bambird import config as cfg
+from . import config as cfg
 # cfg.get_config()
-from bambird import grab_audio_to_df
+from .dataset import grab_audio_to_df
 
 
 #%%
